@@ -16,3 +16,9 @@
 [submodule "fonts"]
 	path = fonts
 	url = https://github.com/shgysk8zer0/fonts.git
+[submodule "css/animate.css"]
+	path = css/animate.css
+	url = https://github.com/daneden/animate.css.git
+[submodule "css/normalize"]
+	path = css/normalize
+	url = https://github.com/necolas/normalize.css.git

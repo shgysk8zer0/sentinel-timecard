@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr" class="no-js" data-service-worker="service-worker.js" itemtype="http://schema.org/WebPage" itemref="org-info" itemscope="">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="description" content="Toggle vehicle tracking for SentinelPro" />
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="description" content="Toggle vehicle tracking for SentinelPro" />
 		<meta itemprop="description" content="Toggle vehicle tracking for SentinelPro" />
 		<meta name="keywords" content="vrmt, Sentinel, tracking" />
 		<meta itemprop="keywords" content="vrmt, Sentinel, tracking" />
@@ -26,84 +26,115 @@
 		<meta name="twitter:site" content="DrvWithSentinel" />
 		<meta name="twitter:title" content="Sentinel Driver" />
 		<meta name="twitter:description" content="Toggle vehicle tracking for SentinelPro" />
-    <title>Sentinel Timecard</title>
-    <script type="module" src="js/index.js" async=""></script>
-    <link rel="stylesheet" href="css/styles/index.css" media="all" />
-    <link rel="import" href="components/timecard-table/timecard-table.html" name="timecard-table-template" async="" />
-    <link rel="import" href="components/timecard-table/edit-entry.html" name="edit-entry-template" async="" />
-    <link rel="dns-prefetch" href="https://www.vrmtel.net" />
+		<title>Sentinel Timecard</title>
+		<script type="module" src="js/index.js" async=""></script>
+		<link rel="stylesheet" href="css/styles/index.css" media="all" />
+		<link rel="import" href="components/timecard-table/timecard-table.html" name="timecard-table-template" async="" />
+		<link rel="import" href="components/timecard-table/edit-entry.html" name="edit-entry-template" async="" />
+		<link rel="import" href="components/login-form/login-form.html" name="LoginForm" async="" />
+		<link rel="dns-prefetch" href="https://www.vrmtel.net" />
 		<link rel="icon" href="./img/favicon.svg" type="image/svg+xml" sizes="any" />
 		<link rel="icon" href="./img/icon-32.png" type="image/png" sizes="32x32" />
 		<link rel="icon" href="./img/icon-16.png" type="image/png" sizes="16x16" />
 		<link rel="apple-touch-icon" href="./img/apple-touch-icon.png" sizes="180x180" />
 		<link rel="mask-icon" href="./img/safari-pinned-tab.svg" color="#2d89ef" />
 		<link rel="manifest" href="./manifest.json" />
-  </head>
-  <body class="border-box background-primary color-default font-main grid">
-    <header id="header" class="background-cover background-center background-no-repeat background-fixed"></header>
-    <nav id="nav"></nav>
-    <main class="center">
-      <timecard-table datasrc="./punches.json"></timecard-table>
-    </main>
-    <!-- <aside id="sidebar"></aside> -->
-    <footer id="footer" class="relative z-1 color-alt" role="contentinfo">
-  			<div id="org-info" itemprop="copyrightHolder" itemtype="http://schema.org/Organization" itemscope="">
-  				<h3>
-  					<a href="https://www.drivewithsentinel.com/" itemprop="url">
-  						<meta itemprop="name" content="Sentinel" />
-  						<img itemprop="image" src="./img/logo.png" alt="Sentinel" />
-  					</a>
-  				</h3>
-  				<div class="contact-links">
-  					<div>
-  						<a href="tel:+1-661-249-4393" class="inline-block" content="+1-661-249-4393" itemprop="telephone" title="661-249-4393">
-  							<svg class="current-color icon">
-  								<use xlink:href="img/icons.svg#call-start" />
-  							</svg>
-  							<span>661-249-4393</span>
-  						</a>
-  					</div>
-  					<div>
-  						<a href="mailto:info@drivewithsentinel.com" class="inline-block" itemprop="email" content="info@drivewithsentinel.com" title="info@drivewithsentinel.com">
-  							<svg class="current-color icon">
-  								<use xlink:href="img/icons.svg#mail-read" />
-  							</svg>
-  							<span>info@drivewithsentinel.com</span>
-  						</a>
-  					</div>
-  				</div>
-  				<address itemprop="address" itemtype="http://schema.org/PostalAddress" itemscope="">
-  					<div itemprop="streetAddress">27240 Turnberry Lane Suite 200</div>
-  					<div>
-  						<span itemprop="addressLocality">Valencia</span>,
-  						<span itemprop="addressRegion">CA</span>
-  						<span itemprop="postalCode">91355</span>
-  						<meta itemprop="addressCountry" content="USA" />
-  				</address>
-  				<hr />
-  				<div class="social-icons flex row no-wrap">
-  					<a href="https://www.facebook.com/Drive-With-Sentinel-746644742040088/" target="_blank" itemprop="sameAs" class="social-link inline-block" rel="noreferrer external" title="Facebook">
-  						<svg class="icon">
-  							<use xlink:href="img/icons.svg#facebook" />
-  						</svg>
-  					</a>
-  					<a href="https://www.linkedin.com/company-beta/7602851?pathWildcard=7602851" target="_blank" itemprop="sameAs" class="social-link inline-block" rel="noreferrer external" title="LinkedIn">
-  						<svg class="icon">
-  							<use xlink:href="img/icons.svg#linkedin" />
-  						</svg>
-  					</a>
-  					<a href="https://twitter.com/DrvWithSentinel" target="_blank" itemprop="sameAs" class="social-link inline-block" rel="noreferrer external" title="Twitter">
-  						<svg class="icon">
-  							<use xlink:href="img/icons.svg#twitter" />
-  						</svg>
-  					</a>
-  				</div>
-  			</div>
-  			<span>&copy;</span>
-  			<time>2015</time>
-  			<span>&mdash;</span>
-  			<time itemprop="copyrightYear" is="current-year">2019</time>
-  			<strong>All Rights Reserved</strong>
-  		</footer>
-  </body>
+	</head>
+	<body class="border-box background-primary color-default font-main grid">
+		<header id="header" class="background-cover background-center background-no-repeat background-fixed center">
+			<a href="https://www.drivewithsentinel.com/" class="inline-block">
+				<img itemprop="image" src="./img/logo.png" alt="Sentinel" />
+			</a>
+		</header>
+		<nav id="nav" class="flex row no-wrap sticky top z-3">
+			<button type="button" class="btn ptn-primary" is="login-button" hidden="">
+				<svg class="current-color icon">
+					<use xlink:href="img/icons.svg#sign-in" />
+				</svg>
+			</button>
+			<button type="button" class="btn btn-primary" is="logout-button" hidden="">
+				<svg class="current-color icon">
+					<use xlink:href="img/icons.svg#sign-out" />
+				</svg>
+			</button>
+		</nav>
+		<main class="center">
+			<timecard-table datasrc="./punches.json"></timecard-table>
+		</main>
+		<!-- <aside id="sidebar"></aside> -->
+		<footer id="footer" class="relative z-1 color-alt" role="contentinfo">
+				<div id="org-info" itemprop="copyrightHolder" itemtype="http://schema.org/Organization" itemscope="">
+					<h3>
+						<a href="https://www.drivewithsentinel.com/" itemprop="url">
+							<meta itemprop="name" content="Sentinel" />
+							<img itemprop="image" src="./img/logo.png" alt="Sentinel" />
+						</a>
+					</h3>
+					<div class="contact-links">
+						<div>
+							<a href="tel:+1-661-249-4393" class="inline-block" content="+1-661-249-4393" itemprop="telephone" title="661-249-4393">
+								<svg class="current-color icon">
+									<use xlink:href="img/icons.svg#call-start" />
+								</svg>
+								<span>661-249-4393</span>
+							</a>
+						</div>
+						<div>
+							<a href="mailto:info@drivewithsentinel.com" class="inline-block" itemprop="email" content="info@drivewithsentinel.com" title="info@drivewithsentinel.com">
+								<svg class="current-color icon">
+									<use xlink:href="img/icons.svg#mail-read" />
+								</svg>
+								<span>info@drivewithsentinel.com</span>
+							</a>
+						</div>
+					</div>
+					<address itemprop="address" itemtype="http://schema.org/PostalAddress" itemscope="">
+						<div itemprop="streetAddress">27240 Turnberry Lane Suite 200</div>
+						<div>
+							<span itemprop="addressLocality">Valencia</span>,
+							<span itemprop="addressRegion">CA</span>
+							<span itemprop="postalCode">91355</span>
+							<meta itemprop="addressCountry" content="USA" />
+					</address>
+					<hr />
+					<div class="social-icons flex row no-wrap">
+						<a href="https://www.facebook.com/Drive-With-Sentinel-746644742040088/" target="_blank" itemprop="sameAs" class="social-link inline-block" rel="noreferrer external" title="Facebook">
+							<svg class="icon">
+								<use xlink:href="img/icons.svg#facebook" />
+							</svg>
+						</a>
+						<a href="https://www.linkedin.com/company-beta/7602851?pathWildcard=7602851" target="_blank" itemprop="sameAs" class="social-link inline-block" rel="noreferrer external" title="LinkedIn">
+							<svg class="icon">
+								<use xlink:href="img/icons.svg#linkedin" />
+							</svg>
+						</a>
+						<a href="https://twitter.com/DrvWithSentinel" target="_blank" itemprop="sameAs" class="social-link inline-block" rel="noreferrer external" title="Twitter">
+							<svg class="icon">
+								<use xlink:href="img/icons.svg#twitter" />
+							</svg>
+						</a>
+					</div>
+				</div>
+				<span>&copy;</span>
+				<time>2015</time>
+				<span>&mdash;</span>
+				<time itemprop="copyrightYear" is="current-year">2019</time>
+				<strong>All Rights Reserved</strong>
+			</footer>
+			<login-form>
+				<b slot="legend">Sign In</b>
+				<svg class="current-color icon" slot="user-id-label">
+					<use xlink:href="img/icons.svg#avatar-default" />
+				</svg>
+				<svg class="current-color icon" slot="password-label">
+					<use xlink:href="img/icons.svg#dialog-password" />
+				</svg>
+				<svg class="current-color icon" slot="submit-icon">
+					<use xlink:href="img/icons.svg#sign-in" />
+				</svg>
+				<svg class="current-color icon" slot="reset-icon">
+					<use xlink:href="img/icons.svg#x" />
+				</svg>
+			</login-form>
+	</body>
 </html>

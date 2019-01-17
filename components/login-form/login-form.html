@@ -1,0 +1,42 @@
+<template id="login-form-template">
+	<style>
+		@import url("./css/core-css/element.css");
+		@import url("./css/core-css/class-rules.css");
+		@import url("./css/core-css/animations.css");
+		@import url("./css/animate.css/animate.css");
+
+		input {
+			height: 1.3rem;
+		}
+
+		button {
+			--button-padding: 0.6em 2.2em;
+		}
+	</style>
+	<div class="dialog-container">
+		<dialog id="login-form-dialog" class="animation-speed-normal animation-ease-in-out fadeIn no-border">
+			<form name="login">
+				<fieldset class="no-border">
+					<legend>
+						<slot name="legend"></slot>
+					</legend>
+					<label for="login-id">
+						<slot name="user-id-label">User ID</slot>
+					</label>
+					<input type="text" name="driver_code" id="login-id" pattern="[A-z\d]{5}" minlength="5" maxlength="5" placeholder="######" autocomplete="username" required="" />
+					<br />
+					<label for="login-password">
+						<slot name="password-label">Password</slot>
+					</label>
+					<input type="password" name="driver_pin" id="login-password" pattern="\d{4}" placeholder="******" autocomplete="current-password" required="" />
+				</fieldset>
+				<button type="submit" class="btn btn-accept">
+					<slot name="submit-icon">Submit</slot>
+				</button>
+				<button type="reset" class="btn btn-reject">
+					<slot name="reset-icon">Reset</slot>
+				</button>
+			</form>
+		</dialog>
+	</div>
+</template>
