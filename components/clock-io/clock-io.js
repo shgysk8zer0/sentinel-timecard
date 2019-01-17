@@ -30,6 +30,7 @@ export default class HTMLClockIOELement extends HTMLElement {
 				// 		throw new Error(`${json.message} [${json.error}]`);
 				// 	} else {
 				// 		this.checkedIn = ! this.checkedIn;
+				// 		sessionStorage.setItem('currentStatus', this.checkedIn ? 'IN' : 'OUT');
 				// 	}
 				// } else {
 				// 	throw new Error(`${resp.url} [${resp.status} ${resp.statusText}]`);
@@ -42,7 +43,7 @@ export default class HTMLClockIOELement extends HTMLElement {
 
 	toJSON() {
 		const data = Object.fromEntries(new FormData(this.shadowRoot.querySelector('form')).entries());
-		data.clockedinout = this.clockedIn ? 'In' : 'Out';
+		data.status = this.clockedIn ? 'IN' : 'OUT';
 		return [data];
 	}
 
