@@ -1,8 +1,8 @@
 {
 	"version": "1.0.0",
-	"name": "Sentinel Tracking",
-	"short_name": "Sentinel Trk",
-	"description": "Toggle vehicle tracking for SentinelPro",
+	"name": "Sentinel Timecard",
+	"short_name": "Sentinel Tme",
+	"description": "Time tracking for SentinelPro",
 	"start_url": ".",
 	"lang": "en",
 	"display": "standalone",
