@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @import url("/css/core-css/element.css");
+      @import url("/css/core-css/class-rules.css");
+
+      table {
+        max-height: var(--timecard-table-height, 60vh);
+        overflow-y: auto;
+      }
+
+      td, th {
+        padding: var(--timecard-cell-padding, 0.3rem);
+      }
+
+      thead {
+        background: var(--timecard-header-background, #1763b9);
+        color: var(--timecard-header-color, #e0e0e0);
+      }
+
+      tbody > tr {
+        background: var(--timecard-row-even-background, #c6c6c6);
+        color: var(--timecard-row-event-color, #343434);
+      }
+
+      tbody > tr:nth-child(odd) {
+        background: var(--timecard-row-odd-background, #dfdfdf);
+        color: var(--timecard-row-odd-color, #262626);
+      }
+    </style>
+  </head>
+  <body>
+    <table>
+      <caption>
+        <slot name="caption"></slot>
+      </caption>
+      <thead class="sticky top shadow">
+        <tr>
+          <th>In/Out</th>
+          <th>DateTime</th>
+          <th>Hours</th>
+          <th>Modify</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <template id="row-template">
+      <tr>
+        <td data-field="io" class="capitalize center"></td>
+        <td class="center">
+          <time data-field="datetime"></time>
+        </td>
+        <td class="center">
+          <b data-field="hours"></b>
+        </td>
+        <td class="center">
+          <button type="button" data-click="edit" title="Request Changes">
+            <svg class="current-color icon" viewBox="0 0 16 16">
+              <g fill-rule="evenodd">
+                  <path d="M2.68 10.29l5.85-5.85 3 2.999-5.83 5.873-4.027 1.072z"/>
+                  <path d="M11.64 1.67c-.2 0-.401.077-.555.23l-1.77 1.768 3.054 3.053 1.769-1.77a.783.783 0 0 0 0-1.11l-1.943-1.94a.782.782 0 0 0-.555-.231z" solid-color="#000000"/>
+              </g>
+          </svg>
+          </button>
+        </td>
+      </tr>
+    </template>
+  </body>
+</html>
