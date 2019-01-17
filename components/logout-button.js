@@ -1,9 +1,10 @@
 import {confirm} from '../js/std-js/asyncDialog.js';
+import User from '../js/User.js';
 
 class HTMLLogoutButtonElement extends HTMLButtonElement {
 	constructor() {
 		super();
-		this.hidden = ! sessionStorage.hasOwnProperty('token');
+		this.hidden = ! User.loggedIn;
 		document.addEventListener('login', () => this.hidden = false);
 		document.addEventListener('logout', () => this.hidden = true);
 		this.addEventListener('click', async () => {

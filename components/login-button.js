@@ -1,7 +1,9 @@
+import User from '../js/User.js';
+
 class HTMLLoginButtonElement extends HTMLButtonElement {
 	constructor() {
 		super();
-		this.hidden = sessionStorage.hasOwnProperty('token');
+		this.hidden = User.loggedIn;
 		this.disabled = ! navigator.onLine;
 		this.addEventListener('click', async () =>  this.form.showModal());
 		document.addEventListener('login', () => this.hidden = true);
@@ -11,7 +13,15 @@ class HTMLLoginButtonElement extends HTMLButtonElement {
 	}
 
 	get form() {
-		return document.querySelector('login-form');
+		return document.querySelector(this.selector);
+	}
+
+	get selector() {
+		return this.getAttribute('selector') || 'login-form';
+	}
+
+	set selector(selector) {
+		this.setAttribute('selector', selector);
 	}
 }
 

@@ -16,7 +16,6 @@ export default class LoginForm extends HTMLElement {
 			try {
 				const form = new FormData(this.form);
 				const data = Object.fromEntries(form.entries());
-				console.info(data);
 				this.login({
 					driver_code: data.driver_code,
 					driver_pin: data.driver_pin,
@@ -55,7 +54,7 @@ export default class LoginForm extends HTMLElement {
 
 	async login({driver_code, driver_pin, store = true}) {
 		const headers = new Headers();
-		const body = JSON.stringify([{driver_code, driver_pin}]);
+		const body = JSON.stringify([{driver_code, driver_pin, clock: 1}]);
 		headers.set('Content-Type', 'application/json');
 		headers.set('Accept', 'application/json');
 
@@ -71,6 +70,9 @@ export default class LoginForm extends HTMLElement {
 			if ('error' in json) {
 				throw new Error(`"${json.message}" [${json.error}]`);
 			}
+			json.driversCode = driver_code;
+			json.currentStatus = json.current_status;
+			delete json.current_status;
 
 			document.dispatchEvent(new CustomEvent('login', {detail: json}));
 

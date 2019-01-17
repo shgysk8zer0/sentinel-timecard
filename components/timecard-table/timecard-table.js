@@ -1,4 +1,6 @@
 import './edit-entry.js';
+import User from '../../js/User.js';
+import {API} from '../../js/consts.js';
 import {importLink} from '../../js/std-js/functions.js';
 
 const DAYS = [
@@ -20,9 +22,51 @@ function dow(dNum) {
 	return DAYS[dNum];
 }
 
+function parse(...records) {
+	return records.map(record => {
+		return {
+			datetime: record.clockdttm.replace(' ', 'T'),
+			io: record.status.toLowerCase(),
+			location: record.location,
+		};
+	});
+}
+
+async function render(table) {
+	await table.ready();
+	await User.whenLoggedIn();
+	const headers = new Headers();
+	headers.set('Accept', 'application/json');
+	const resp = await fetch(table.dataSrc, {headers, mode: 'cors'});
+	if (resp.ok) {
+		const json = await resp.json();
+
+		if ('error' in json) {
+			throw new Error(`${json.message} [${json.error}]`);
+		} else if (! Array.isArray(json[0].details)) {
+			throw new TypeError('Expected an array of "details" in response');
+		}
+		const details = parse(...json[0].details);
+		[...table.tBody.rows].forEach(r => r.remove());
+		table.entries = details;
+		table.dispatchEvent(new CustomEvent('populated', {details}));
+		return details;
+
+	}
+}
+
 export default class HTMLTimeCardTableElement extends HTMLElement {
 	constructor({uid = NaN} = {}) {
 		super();
+		this.hidden = ! User.isLoggedIn;
+		document.addEventListener('login', () => {
+			this.hidden = false;
+			render(this);
+		});
+		document.addEventListener('logout', () => {
+			this.hidden = true;
+			[...this.tBody.rows].forEach(row => row.remove());
+		});
 		this.attachShadow({mode: 'open'});
 		importLink('timecard-table-template').then(async tmp => {
 			tmp = tmp.cloneNode(true);
@@ -40,7 +84,7 @@ export default class HTMLTimeCardTableElement extends HTMLElement {
 
 	get dataSrc() {
 		if (this.hasAttribute('datasrc')) {
-			return new URL(this.getAttribute('datasrc'), document.baseURI);
+			return new URL(`m_clockinout/${sessionStorage.getItem('token')}`, API);
 		} else {
 			return null;
 		}
@@ -121,7 +165,6 @@ export default class HTMLTimeCardTableElement extends HTMLElement {
 				const prop = cell.dataset.field;
 				switch(prop) {
 				case 'datetime':
-					console.log({cell, dateTime: cell.dateTime, date: new Date(cell.dateTime)});
 					return [prop, cell instanceof HTMLTimeElement ? cell.dateTime || cell.textContent : cell.textContent];
 				case 'hours':
 					return [prop, parseFloat(cell.textContent)];
@@ -238,14 +281,9 @@ export default class HTMLTimeCardTableElement extends HTMLElement {
 		case 'uid':
 			console.info('Changing UID will eventually update date displayed with an API fetch');
 			break;
-		case 'datasrc':
-			await this.ready();
-			const resp = await fetch(this.dataSrc);
-			const details = await resp.json();
-			[...this.tBody.rows].forEach(r => r.remove());
-			this.entries = details;
-			this.dispatchEvent(new CustomEvent('populated', {details}));
-			break;
+		// case 'datasrc':
+		// 	render(this);
+		// 	break;
 		default:
 			throw new Error(`Unhandled attribute change: "${name}"`);
 		}
@@ -255,7 +293,7 @@ export default class HTMLTimeCardTableElement extends HTMLElement {
 		return [
 			'border',
 			'uid',
-			'datasrc',
+			// 'datasrc',
 		];
 	}
 }
