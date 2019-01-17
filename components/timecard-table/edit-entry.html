@@ -45,26 +45,20 @@
 		<dialog>
 			<form name="edit">
 				<fieldset>
-						<div class="form-row">
-							<input type="radio" name="io" id="io-in" value="in" hidden=""/>
-							<label for="io-in" role="button" title="In">
-								<slot name="io-in-label">In</slot>
-							</label>
-							<input type="radio" name="io" id="io-out" value="Out" hidden="" />
-							<label for="io-out" role="button" title="Out">
-								<slot name="io-out-label">Out</slot>
-							</label>
+						<div class="form-row center">
+							<slot class="capitalize cursor-default" role="button" name="io"></slot>
 						</div>
 						<div class="form-row">
-							<label for="date" title="Date/Time">
-								<slot name="datetime-label" class="inline-block">
-									<svg class="current-color icon" viewBox="0 0 14 16">
-										<path fill-rule="evenodd" d="M8 8h3v2H7c-.55 0-1-.45-1-1V4h2v4zM7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7z"/>
+							<slot name="datetime-label" class="inline-block">
+								<svg class="current-color icon" viewBox="0 0 14 16">
+									<path fill-rule="evenodd" d="M8 8h3v2H7c-.55 0-1-.45-1-1V4h2v4zM7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7z"/>
 								</svg>
 							</slot>
-							</label>
-							<input type="date" name="date" id="date" class="form-control" placeholder="YYYY-MM-DD" required="" />
-							<input type="time" name="time" class="form-control" placeholder="HH:MM" required="" />
+							<time class="pretty-date" datetime="">
+								<slot name="day"></slot>,
+								<slot name="date"></slot>
+								<slot name="time"></slot>
+							</time>
 						</div>
 						<div class="form-row">
 							<label for="notes" title="Notes" class="v-align-top">
@@ -74,9 +68,9 @@
 									</svg>
 								</slot>
 							</label>
-							<textarea name="notes" placeholder="Enter note or details" cols="37" rows="5"></textarea>
+							<textarea name="notes" placeholder="Enter note or details" cols="37" rows="5" required=""></textarea>
 						</div>
-						<input type="hidden" name="uid" />
+						<input type="hidden" name="token" />
 				</fieldset>
 				<div class="form-btns">
 					<button type="submit" class="btn btn-accept" title="Submit">

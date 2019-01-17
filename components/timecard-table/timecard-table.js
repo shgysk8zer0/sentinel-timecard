@@ -236,7 +236,6 @@ export default class HTMLTimeCardTableElement extends HTMLElement {
 					if (tr instanceof HTMLTableRowElement) {
 						await customElements.whenDefined('edit-entry');
 						const data = this.getRowData(tr);
-						data.uid = this.uid;
 						const HTMLEditEntryElement = customElements.get('edit-entry');
 						const dialog = new HTMLEditEntryElement(data);
 						await dialog.ready();

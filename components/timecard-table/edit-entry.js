@@ -2,17 +2,32 @@ import {importLink} from '../../js/std-js/functions.js';
 
 const VALID_IO = ['in', 'out'];
 
+const DAYS = [
+	'Sun',
+	'Mon',
+	'Tue',
+	'Wed',
+	'Thu',
+	'Fri',
+	'Sat'
+];
+
+function dow(dNum) {
+	if (dNum instanceof Date) {
+		dNum = dNum.getDay();
+	} else if (typeof dNum === 'string') {
+		dNum = parseInt(dNum);
+	}
+	return DAYS[dNum];
+}
+
 export default class HTMLEditEntryElement extends HTMLElement {
-	constructor({io, datetime, uid = NaN, notes} = {}) {
+	constructor({io, datetime, token = sessionStorage.getItem('token'), notes} = {}) {
 		super();
-		console.info({io, datetime, uid, notes});
-		if (typeof uid === 'string') {
-			uid = parseInt(uid);
-		}
 		if (typeof datetime === 'string') {
 			datetime = new Date(datetime);
 		}
-		console.log({io, datetime, uid, notes});
+		console.info({io, datetime, token, notes});
 		this.attachShadow({mode: 'open'});
 		importLink('edit-entry-template').then(async temp => {
 			temp = temp.cloneNode(true);
@@ -24,9 +39,6 @@ export default class HTMLEditEntryElement extends HTMLElement {
 			if (datetime instanceof Date && ! Number.isNaN(Date.parse(datetime))) {
 				this.datetime = datetime;
 			}
-			if (! Number.isNaN(uid)) {
-				this.uid = uid;
-			}
 
 			if (typeof notes === 'string') {
 				this.notes = notes;
@@ -35,13 +47,16 @@ export default class HTMLEditEntryElement extends HTMLElement {
 			if (typeof io === 'string' && VALID_IO.includes(io.toLowerCase())) {
 				this.io = io;
 			}
+
+			this.token = token;
+			if (typeof datetime === 'string') {
+				datetime = new Date(datetime);
+			}
+
 			this.form.addEventListener('submit', async event => {
 				event.preventDefault();
 				const formData = new FormData(event.target);
 				const data = Object.fromEntries(formData.entries());
-				data.datetime = `${data.date}T${data.time}`;
-				delete data.date;
-				delete data.time;
 				console.log(data);
 				this.reset();
 			});
@@ -62,15 +77,18 @@ export default class HTMLEditEntryElement extends HTMLElement {
 		this.form.reset();
 	}
 
-	show() {
+	async show() {
+		await this.ready();
 		this.dialog.show();
 	}
 
-	showModal() {
+	async showModal() {
+		await this.ready();
 		this.dialog.showModal();
 	}
 
-	close() {
+	async close() {
+		await this.ready();
 		this.dialog.close();
 	}
 
@@ -90,14 +108,17 @@ export default class HTMLEditEntryElement extends HTMLElement {
 		this.setAttribute('method', method);
 	}
 
-	set uid(uid) {
-		this.form.querySelector('[name="uid"]').value = uid;
+	set token(token) {
+		this.form.querySelector('input[name="token"]').value = token;
 	}
 
 	set io(io) {
 		if (VALID_IO.includes(io.toLowerCase())) {
-			const radios = this.form.querySelectorAll('[name="io"]');
-			radios.forEach(radio => radio.checked = radio.value = io.toLowerCase());
+			const state = document.createElement('b');
+			state.slot = 'io';
+			state.textContent = io;
+			this.form.querySelector('slot[name="io"]').assignedNodes().forEach(el => el.remove());
+			this.append(state);
 		}
 	}
 
@@ -107,21 +128,37 @@ export default class HTMLEditEntryElement extends HTMLElement {
 		}
 
 		if (datetime instanceof Date && ! Number.isNaN(Date.parse(datetime))) {
-			let [date] = datetime.toISOString().split('T');
-			this.date = date;
-			this.time = `${datetime.getHours().toString().padStart(2, '0')}:${datetime.getMinutes().toString().padStart(2, '0')}`;
+			this.date = datetime.toLocaleDateString();
+			this.time = datetime.toLocaleTimeString();
+			this.day = datetime;
+			this.form.querySelector('time.pretty-date').dateTime = datetime.toISOString();
 		} else {
 			throw new TypeError('Expected date to be a valid date');
 		}
 	}
 
 	set date(date) {
-		this.form.querySelector('[name="date"]').value = date;
+		const el = document.createElement('span');
+		el.slot = 'date';
+		el.textContent = date;
+		this.form.querySelector('slot[name="date"]').assignedNodes().forEach(el => el.remove());
+		this.append(el);
 	}
 
 	set time(time) {
-		console.log(time);
-		this.form.querySelector('[name="time"]').value = time;
+		const el = document.createElement('time');
+		el.slot = 'time';
+		el.textContent = time;
+		this.form.querySelector('slot[name="time"]').assignedNodes().forEach(el => el.remove());
+		this.append(el);
+	}
+
+	set day(day) {
+		const el = document.createElement('span');
+		el.textContent = dow(day);
+		el.slot = 'day';
+		this.form.querySelector('slot[name="day"]').assignedNodes().forEach(el => el.remove());
+		this.append(el);
 	}
 
 	set notes(notes) {
