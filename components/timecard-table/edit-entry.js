@@ -27,7 +27,6 @@ export default class HTMLEditEntryElement extends HTMLElement {
 		if (typeof datetime === 'string') {
 			datetime = new Date(datetime);
 		}
-		console.info({io, datetime, token, notes});
 		this.attachShadow({mode: 'open'});
 		importLink('edit-entry-template').then(async temp => {
 			temp = temp.cloneNode(true);

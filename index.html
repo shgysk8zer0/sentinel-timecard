@@ -32,6 +32,7 @@
 		<link rel="import" href="components/timecard-table/timecard-table.html" name="timecard-table-template" async="" />
 		<link rel="import" href="components/timecard-table/edit-entry.html" name="edit-entry-template" async="" />
 		<link rel="import" href="components/login-form/login-form.html" name="LoginForm" async="" />
+		<link rel="import" href="components/clock-io/clock-io.html" name="clock-io-template" async="" />
 		<link rel="dns-prefetch" href="https://www.vrmtel.net" />
 		<link rel="icon" href="./img/favicon.svg" type="image/svg+xml" sizes="any" />
 		<link rel="icon" href="./img/icon-32.png" type="image/png" sizes="32x32" />
@@ -59,7 +60,11 @@
 			</button>
 		</nav>
 		<main class="center">
-			<timecard-table datasrc="./punches.json"></timecard-table>
+			<clock-io class="card shadow inline-block" hidden="">
+				<b slot="legend">Clock In/Out</b>
+			</clock-io>
+			<br />
+			<timecard-table class="card shadow inline-block"></timecard-table>
 		</main>
 		<!-- <aside id="sidebar"></aside> -->
 		<footer id="footer" class="relative z-1 color-alt" role="contentinfo">
