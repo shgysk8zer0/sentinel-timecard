@@ -117,8 +117,8 @@ export default class LoginForm extends HTMLElement {
 			});
 			if (creds instanceof PasswordCredential) {
 				this.login({
-					userid: creds.id,
-					password: creds.password,
+					driver_code: creds.id,
+					driver_pin: creds.password,
 					store: false,
 				});
 			} else {

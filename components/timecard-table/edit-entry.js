@@ -124,8 +124,8 @@ export default class HTMLEditEntryElement extends HTMLElement {
 		this.form.querySelector('[name="time"]').value = time;
 	}
 
-	set noted(notes) {
-		this.form.querySelector('[name="noted"]').value = notes.trim();
+	set notes(notes) {
+		this.form.querySelector('[name="notes"]').value = notes.trim();
 	}
 
 	async ready() {
