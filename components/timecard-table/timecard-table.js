@@ -28,6 +28,7 @@ function parse(...records) {
 			datetime: record.clockdttm.replace(' ', 'T'),
 			io: record.status.toLowerCase(),
 			location: record.location,
+			hours: parseFloat(record.dutyhours) || '',
 		};
 	});
 }
@@ -35,9 +36,10 @@ function parse(...records) {
 async function render(table) {
 	await table.ready();
 	await User.whenLoggedIn();
+	const url = new URL(`m_clockinout/${sessionStorage.getItem('token')}`, API);
 	const headers = new Headers();
 	headers.set('Accept', 'application/json');
-	const resp = await fetch(table.dataSrc, {headers, mode: 'cors'});
+	const resp = await fetch(url, {headers, mode: 'cors'});
 	if (resp.ok) {
 		const json = await resp.json();
 
@@ -80,18 +82,6 @@ export default class HTMLTimeCardTableElement extends HTMLElement {
 
 	toJSON() {
 		return this.entries;
-	}
-
-	get dataSrc() {
-		if (this.hasAttribute('datasrc')) {
-			return new URL(`m_clockinout/${sessionStorage.getItem('token')}`, API);
-		} else {
-			return null;
-		}
-	}
-
-	set dataSrc(url) {
-		this.setAttribute('datasrc', url);
 	}
 
 	get entries() {

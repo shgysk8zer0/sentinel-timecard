@@ -5,6 +5,7 @@ import '../components/login-button.js';
 import '../components/logout-button.js';
 import '../components/timecard-table/timecard-table.js';
 import '../components/login-form/login-form.js';
+import '../components/clock-io/clock-io.js';
 import {registerServiceWorker, loaded} from './std-js/functions.js';
 import User from './User.js';
 window.User = User;
