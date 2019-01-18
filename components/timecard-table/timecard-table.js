@@ -28,6 +28,7 @@ function parse(...records) {
 			datetime: record.clockdttm.replace(' ', 'T'),
 			io: record.status.toLowerCase(),
 			location: record.location,
+			hours: parseFloat(record.dutyhours) || '',
 		};
 	});
 }

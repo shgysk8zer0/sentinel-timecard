@@ -24,9 +24,24 @@
 					</svg>
 				</slot>
 			</fieldset>
+			<button type="button" data-click="show-notes">
+				<slot class="inline-block" name="show-notes-btn">
+					<svg class="current-color icon" viewBox="0 0 14 16">
+						<path fill-rule="evenodd" d="M3 10h4V9H3v1zm0-2h6V7H3v1zm0-2h8V5H3v1zm10 6H1V3h12v9zM1 2c-.55 0-1 .45-1 1v9c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1H1z"/>
+					</svg>
+				</slot>
+			</button>
 			<button type="submit" class="btn btn-primary">
 				<span>Clock</span>
 				<slot name="status"></slot>
 			</button>
+			<dialog id="notes-dialog">
+				<textarea name="notes" placeholder="Enter notes for entry"></textarea>
+				<br />
+				<button type="button" class="btn btn-primary" data-click="close-notes">
+					<slot class="inline-block" name="close-notes-btn">X</slot>
+				</slot>
+			</dialog>
+		</form>
 	</body>
 </html>
