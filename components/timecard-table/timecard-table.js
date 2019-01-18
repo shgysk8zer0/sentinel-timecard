@@ -53,8 +53,19 @@ async function render(table) {
 		[...table.tBody.rows].forEach(r => r.remove());
 		table.entries = detail;
 		table.dispatchEvent(new CustomEvent('populated', {detail}));
+		table.totalHours = sum(table.tBody.rows);
 		return detail;
 	}
+}
+
+function sum(rows) {
+	return [...rows].filter(row => ! row.hidden).reduce((sum, row) => {
+		const hours = parseFloat(row.querySelector('[data-field="hours"]').textContent);
+		if (! Number.isNaN(hours)) {
+			sum += hours;
+		}
+		return sum;
+	}, 0);
 }
 
 export default class HTMLTimeCardTableElement extends HTMLElement {
@@ -94,13 +105,12 @@ export default class HTMLTimeCardTableElement extends HTMLElement {
 				let {start, end} = data;
 				start = new Date(`${start}T00:00:00.000Z`);
 				end = new Date(`${end}T23:59:59.000Z`);
-				const results = [];
 
 				[...this.tBody.rows].forEach(row => {
 					const time = row.querySelector('[data-field="datetime"]');
 					const datetime = new Date(time.dateTime);
 					row.hidden = datetime <= start || datetime >= end;
-					results.push({start, end, datetime, row});
+					this.totalHours = sum(this.tBody.rows);
 				});
 			});
 			searchForm.addEventListener('reset', () => {
@@ -108,6 +118,7 @@ export default class HTMLTimeCardTableElement extends HTMLElement {
 				endDate.value = dstr;
 				startDate.max = dstr;
 				endDate.max = dstr;
+				this.totalHours = this(this.tBody.rows);
 			});
 			this.dispatchEvent(new Event('load'));
 		}).catch(console.error);
@@ -128,6 +139,39 @@ export default class HTMLTimeCardTableElement extends HTMLElement {
 			}
 			this.createRow(entry);
 		});
+	}
+
+	set totalHours(hours) {
+		if (typeof hours === 'number' && ! Number.isNaN(hours)) {
+			const el = document.createElement('span');
+			el.textContent = hours.toFixed(2);
+			el.slot = 'total-hours';
+			this.ready().then(() => {
+				this.shadowRoot.querySelector('slot[name="total-hours"]').assignedNodes().forEach(el => el.remove());
+				this.append(el);
+			});
+		} else {
+			throw new TypeError('Expected total hours to be a number');
+		}
+	}
+
+	get totalHours() {
+		try {
+			const slot = this.shadowRoot.querySelector('slot[name="total-hours"]');
+			if (slot instanceof HTMLSlotElement) {
+				const nodes = slot.assignedNodes();
+				if (nodes.length === 1) {
+					return parseFloat(nodes[0].textContent);
+				} else {
+					throw new Error('totalHours not set');
+				}
+			} else {
+				throw new Error('Total hours slot not found');
+			}
+		} catch(err) {
+			console.error(err);
+			return NaN;
+		}
 	}
 
 	get border() {
@@ -231,6 +275,17 @@ export default class HTMLTimeCardTableElement extends HTMLElement {
 		if (! (this.shadowRoot instanceof ShadowRoot) || this.shadowRoot.childElementCount === 0) {
 			await new Promise(resolve => this.addEventListener('load', () => resolve()));
 		}
+	}
+
+	async populated() {
+		await new Promise(async resolve => {
+			await this.ready();
+			if (this.tBody.rows.length === 0) {
+				this.addEventListener('populated', () => resolve(), {once: true});
+			} else {
+				resolve();
+			}
+		})
 	}
 
 	createRow(props = {}) {
