@@ -23,9 +23,10 @@ function dow(dNum) {
 }
 
 function parse(...records) {
+	const tz = new Date().toISOString().split('.')[1];
 	return records.map(record => {
 		return {
-			datetime: record.clockdttm.replace(' ', 'T'),
+			datetime: new Date(`${record.clockdttm.replace(' ', 'T')}.${tz}`),
 			io: record.status.toLowerCase(),
 			location: record.location,
 			hours: parseFloat(record.dutyhours) || '',
@@ -48,12 +49,11 @@ async function render(table) {
 		} else if (! Array.isArray(json[0].details)) {
 			throw new TypeError('Expected an array of "details" in response');
 		}
-		const details = parse(...json[0].details);
+		const detail = parse(...json[0].details);
 		[...table.tBody.rows].forEach(r => r.remove());
-		table.entries = details;
-		table.dispatchEvent(new CustomEvent('populated', {details}));
-		return details;
-
+		table.entries = detail;
+		table.dispatchEvent(new CustomEvent('populated', {detail}));
+		return detail;
 	}
 }
 
@@ -76,6 +76,39 @@ export default class HTMLTimeCardTableElement extends HTMLElement {
 			if (! Number.isNaN(uid)) {
 				this.uid = uid;
 			}
+			const searchForm = this.shadowRoot.querySelector('form[name="search"]');
+			const now = new Date();
+			const dstr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+			// const tz = now.toISOString().split('.')[1];
+			const startDate = searchForm.querySelector('input[type="date"][name="start"]');
+			const endDate = searchForm.querySelector('input[type="date"][name="end"]');
+			endDate.value = dstr;
+			startDate.max = dstr;
+			endDate.max = dstr;
+			startDate.addEventListener('change', () => endDate.min = startDate.value);
+			endDate.addEventListener('change', () => startDate.max = endDate.value);
+
+			searchForm.addEventListener('submit', async event => {
+				event.preventDefault();
+				const data = Object.fromEntries(new FormData(event.target).entries());
+				let {start, end} = data;
+				start = new Date(`${start}T00:00:00.000Z`);
+				end = new Date(`${end}T23:59:59.000Z`);
+				const results = [];
+
+				[...this.tBody.rows].forEach(row => {
+					const time = row.querySelector('[data-field="datetime"]');
+					const datetime = new Date(time.dateTime);
+					row.hidden = datetime <= start || datetime >= end;
+					results.push({start, end, datetime, row});
+				});
+			});
+			searchForm.addEventListener('reset', () => {
+				[...this.tBody.rows].forEach(row => row.hidden = false);
+				endDate.value = dstr;
+				startDate.max = dstr;
+				endDate.max = dstr;
+			});
 			this.dispatchEvent(new Event('load'));
 		}).catch(console.error);
 	}
