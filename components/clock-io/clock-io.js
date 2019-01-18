@@ -65,13 +65,10 @@ export default class HTMLClockIOELement extends HTMLElement {
 		return [data];
 	}
 
-	async update({
-		token = sessionStorage.getItem('token'),
-		clockedIn = sessionStorage.getItem('currentStatus').toUpperCase() === 'IN',
-	} = {}) {
+	async update() {
 		await this.ready();
-		this.token = token;
-		this.clockedIn = clockedIn;
+		this.token = sessionStorage.getItem('token');
+		this.clockedIn = sessionStorage.getItem('currentStatus').toUpperCase() === 'IN';
 	}
 
 	async ready() {
