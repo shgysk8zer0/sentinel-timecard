@@ -285,7 +285,7 @@ export default class HTMLTimeCardTableElement extends HTMLElement {
 			} else {
 				resolve();
 			}
-		})
+		});
 	}
 
 	createRow(props = {}) {
