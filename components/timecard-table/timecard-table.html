@@ -37,7 +37,7 @@
 		</style>
 	</head>
 	<body>
-		<form name="search">
+		<form name="search" class="card">
 			<label for="search-start" title="Start Date">
 				<slot class="inline-block" name="start-icon">
 					<svg class="current-color icon" viewBox="0 0 14 16">
@@ -65,15 +65,25 @@
 		</form>
 		<table>
 			<caption>
-				<slot name="caption"></slot>
+				<slot name="caption">Clock In/Out Entries</slot>
 			</caption>
 			<thead class="sticky top shadow">
 				<tr>
-					<th>In/Out</th>
-					<th>DateTime</th>
-					<th>Hours</th>
-					<th>Location</th>
-					<th>Modify</th>
+					<th>
+						<slot name="io-lable">In/Out</slot>
+					</th>
+					<th>
+						<slot name="datetime-label">DateTime</slot>
+					</th>
+					<th>
+						<slot name="hours-label">Hours</slot>
+					</th>
+					<th>
+						<slot name="location-label">Location</slot>
+					</th>
+					<th>
+						<slot name="modify-label">Modify</slot>
+					</th>
 				</tr>
 			</thead>
 			<tbody></tbody>
