@@ -11,7 +11,12 @@ export default class HTMLClockIOELement extends HTMLElement {
 			this.hidden = false;
 			this.update();
 		});
-		document.addEventListener('logout', () => this.hidden = true);
+		document.addEventListener('logout', () => {
+			this.hidden = true;
+			this.token = '';
+			this.clockedIn = false;
+			this.notes = '';
+		});
 
 		importLink('clock-io-template').then(async temp => {
 			temp = temp.cloneNode(true);
@@ -46,13 +51,12 @@ export default class HTMLClockIOELement extends HTMLElement {
 						this.clockedIn = ! this.clockedIn;
 						const io = this.status;
 						sessionStorage.setItem('currentStatus', io.toUpperCase());
-						this.shadowRoot.querySelector('textarea[name="notes"]').value = '';
+						this.notes = '';
 						document.querySelector('timecard-table').createRow({datetime, io});
 					}
 				} else {
 					throw new Error(`${resp.url} [${resp.status} ${resp.statusText}]`);
 				}
-				console.log({url, headers: Object.fromEntries(headers.entries()), body});
 			});
 			this.shadowRoot.append(...temp.head.children, ...temp.body.children);
 			this.update();
@@ -67,8 +71,10 @@ export default class HTMLClockIOELement extends HTMLElement {
 
 	async update() {
 		await this.ready();
-		this.token = sessionStorage.getItem('token');
-		this.clockedIn = sessionStorage.getItem('currentStatus').toUpperCase() === 'IN';
+		if (User.loggedIn) {
+			this.token = sessionStorage.getItem('token');
+			this.clockedIn = sessionStorage.getItem('currentStatus').toUpperCase() === 'IN';
+		}
 	}
 
 	async ready() {
@@ -82,7 +88,11 @@ export default class HTMLClockIOELement extends HTMLElement {
 	}
 
 	set token(token) {
-		this.shadowRoot.querySelector('input[name="token"]').value = token;
+		this.ready().then(() => this.shadowRoot.querySelector('input[name="token"]').value = token);
+	}
+
+	set notes(txt) {
+		this.ready().then(() => this.shadowRoot.querySelector('textarea[name="notes"]').value = txt);
 	}
 
 	set clockedIn(status = true) {
@@ -95,11 +105,13 @@ export default class HTMLClockIOELement extends HTMLElement {
 	}
 
 	set status(txt) {
-		this.shadowRoot.querySelector('slot[name="status"]').assignedNodes().forEach(el => el.remove());
 		const el = document.createElement('span');
 		el.slot = 'status';
 		el.textContent = txt;
-		this.append(el);
+		this.ready().then(() => {
+			this.shadowRoot.querySelector('slot[name="status"]').assignedNodes().forEach(el => el.remove());
+			this.append(el);
+		});
 	}
 
 	get status() {
