@@ -1,4 +1,5 @@
 import {importLink} from '../../js/std-js/functions.js';
+import {API} from '../../js/consts.js';
 
 const VALID_IO = ['in', 'out'];
 
@@ -27,14 +28,17 @@ export default class HTMLEditEntryElement extends HTMLElement {
 		if (typeof datetime === 'string') {
 			datetime = new Date(datetime);
 		}
+
 		this.attachShadow({mode: 'open'});
 		importLink('edit-entry-template').then(async temp => {
 			temp = temp.cloneNode(true);
 			const container = document.createElement('div');
 			container.classList.toggle('no-dialog', document.createElement('dialog') instanceof HTMLUnknownElement);
-			container.append(...temp.head.children);
-			container.append(...temp.body.children);
+			container.append(...temp.head.children, ...temp.body.children);
 			this.shadowRoot.append(container);
+			this.action = new URL('m_editpunch', API);
+			this.method = 'POST';
+
 			if (datetime instanceof Date && ! Number.isNaN(Date.parse(datetime))) {
 				this.datetime = datetime;
 			}
@@ -54,45 +58,82 @@ export default class HTMLEditEntryElement extends HTMLElement {
 
 			this.form.addEventListener('submit', async event => {
 				event.preventDefault();
-				const formData = new FormData(event.target);
-				const data = Object.fromEntries(formData.entries());
-				console.log(data);
-				this.reset();
+				try {
+					const headers = new Headers();
+					const controller = new AbortController();
+					headers.set('Accept', 'application/json');
+					headers.set('Content-Type', 'application/json');
+
+					const req = new Request(this.action, {
+						method: this.method,
+						mode: 'cors',
+						body: JSON.stringify(this),
+						signal: controller.signal,
+						headers,
+					});
+
+					// controller.abort();
+
+					if (req.signal.aborted) {
+						console.info({
+							req,
+							url: new URL(req.url),
+							headers: Object.fromEntries(req.headers.entries()),
+							body: JSON.parse(JSON.stringify(this)),
+						});
+					} else {
+						const resp = await fetch(req);
+						console.info(resp);
+
+						if (resp.ok) {
+							const json = await resp.json();
+							if ('error' in json) {
+								throw new Error(`${json.message} [${json.error}]`);
+							} else {
+								this.reset();
+							}
+						} else {
+							throw new Error(`${resp.url} [${resp.status} ${resp.statusText}]`);
+						}
+					}
+				} catch(err) {
+					console.trace();
+					console.error(err);
+				}
 			});
+
 			this.form.addEventListener('reset', () => this.close());
 			this.dispatchEvent(new Event('load'));
 		});
 	}
 
+	toJSON() {
+		if (this.populated) {
+			// @TODO Ensure proper datetime (timezone)
+			return [Object.fromEntries(new FormData(this.form).entries())];
+		} else {
+			return {};
+		}
+	}
+
+	get populated() {
+		return this.shadowRoot.childElementCount !== 0;
+	}
+
 	get dialog() {
-		return this.shadowRoot.querySelector('dialog');
+		if (this.populated) {
+			return this.shadowRoot.querySelector('dialog');
+		} else {
+			throw new Error(`<${this.tagName}> is not yet created.`);
+		}
 	}
 
 	get form() {
 		return this.dialog.querySelector('form');
 	}
 
-	reset() {
-		this.form.reset();
-	}
-
-	async show() {
-		await this.ready();
-		this.dialog.show();
-	}
-
-	async showModal() {
-		await this.ready();
-		this.dialog.showModal();
-	}
-
-	async close() {
-		await this.ready();
-		this.dialog.close();
-	}
-
 	get action() {
-		return this.getAttribute('action');
+		return new URL(this.getAttribute('action') || 'm_editpunch', API);
 	}
 
 	set action(action) {
@@ -131,6 +172,7 @@ export default class HTMLEditEntryElement extends HTMLElement {
 			this.time = datetime.toLocaleTimeString();
 			this.day = datetime;
 			this.form.querySelector('time.pretty-date').dateTime = datetime.toISOString();
+			this.form.querySelector('input[name="clockdttm"]').value = datetime.toISOString();
 		} else {
 			throw new TypeError('Expected date to be a valid date');
 		}
@@ -165,17 +207,38 @@ export default class HTMLEditEntryElement extends HTMLElement {
 	}
 
 	async ready() {
-		if (this.shadowRoot.childElementCount === 0) {
+		if (! this.populated) {
 			await new Promise(resolve => this.addEventListener('load', () => resolve(), {once: true}));
 		}
+	}
+
+	reset() {
+		this.form.reset();
+	}
+
+	async show() {
+		await this.ready();
+		this.dialog.show();
+	}
+
+	async showModal() {
+		await this.ready();
+		this.dialog.showModal();
+	}
+
+	async close() {
+		await this.ready();
+		this.dialog.close();
 	}
 
 	async attributeChangedCallback(name, oldValue, newValue) {
 		await this.ready();
 		switch(name.toLowerCase()) {
 		case 'action':
+			this.form.action = newValue;
+			break;
 		case 'method':
-			this.form[name.toLowerCase()] = newValue;
+			this.form.method = newValue;
 			break;
 		default:
 			throw new Error(`Invalid attribute change handler: "${name}"`);
