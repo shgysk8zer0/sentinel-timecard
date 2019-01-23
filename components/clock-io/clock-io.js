@@ -49,10 +49,22 @@ export default class HTMLClockIOELement extends HTMLElement {
 						throw new Error(`${json.message} [${json.error}]`);
 					} else {
 						this.clockedIn = ! this.clockedIn;
-						const io = this.status;
-						sessionStorage.setItem('currentStatus', io.toUpperCase());
+						const entry = {
+							datetime,
+							io: this.status,
+							location: json.location,
+							hours: parseFloat(json.hours),
+						};
+						sessionStorage.setItem('currentStatus', entry.io.toUpperCase());
 						this.notes = '';
-						document.querySelector('timecard-table').createRow({datetime, io});
+						// const io = this.status;
+						// const location = json.location;
+						// const hours = parseFloat(json.hours);
+						// {datetime, io, location, hours}
+						const row = document.querySelector('timecard-table').createRow(entry);
+						if (row instanceof HTMLTableRowElement) {
+							row.scrollIntoView({block: 'end', behavior: 'smooth'});
+						}
 					}
 				} else {
 					throw new Error(`${resp.url} [${resp.status} ${resp.statusText}]`);

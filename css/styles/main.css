@@ -1,16 +1,24 @@
 main {
 	grid-area: main;
-	margin: 1.2rem;
 	grid-template-columns: repeat(auto-fill, minmax(100px, 350px));
-	grid-template-rows: repeat(auto-fill);
 	grid-gap: 0.3rem;
+	overflow: auto;
 }
 
-
-main .driver {
-	transition: transform 350ms ease-in-out;
+@media (min-width: 500px) {
+	main {
+		margin: 1.2rem;
+	}
 }
 
-main .driver:hover {
-	transform: scale(1.1);
+clock-io, timecard-table {
+	margin-top: 1.3rem;
+}
+
+timecard-table {
+	display: inline-block;
+	max-height: 60vh;
+	overflow: auto;
+	scrollbar-color: #646464 lightgray;
+	scrollbar-width: thin;
 }

@@ -9,12 +9,3 @@
 @import url("../core-css/animations.css");
 @import url("../core-css/fonts.css");
 @import url("./layout.css");
-
-timecard-table {
-	display: inline-block;
-	max-height: 60vh;
-	overflow: auto;
-	margin: 4rem;
-	scrollbar-color: #646464 lightgray;
-	scrollbar-width: thin;
-}

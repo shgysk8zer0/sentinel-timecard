@@ -13,7 +13,8 @@
 
 			table {
 				max-height: var(--timecard-table-height, 60vh);
-				overflow-y: auto;
+				max-width: var(--timecard-table-width, 60vw);
+				overflow: auto;
 			}
 
 			td, th {
@@ -74,16 +75,13 @@
 						<slot name="io-lable">In/Out</slot>
 					</th>
 					<th>
-						<slot name="datetime-label">DateTime</slot>
-					</th>
-					<th>
 						<slot name="hours-label">Hours</slot>
 					</th>
 					<th>
-						<slot name="location-label">Location</slot>
+						<slot name="datetime-label">DateTime</slot>
 					</th>
 					<th>
-						<slot name="modify-label">Modify</slot>
+						<slot name="location-label">Location</slot>
 					</th>
 				</tr>
 			</thead>
@@ -93,22 +91,12 @@
 			<tr>
 				<td data-field="io" class="capitalize center"></td>
 				<td class="center">
-					<time data-field="datetime"></time>
-				</td>
-				<td class="center">
 					<b data-field="hours"></b>
 				</td>
-				<td class="center" data-field="location"></td>
 				<td class="center">
-					<button type="button" data-click="edit" title="Request Changes">
-						<svg class="current-color icon" viewBox="0 0 16 16">
-							<g fill-rule="evenodd">
-									<path d="M2.68 10.29l5.85-5.85 3 2.999-5.83 5.873-4.027 1.072z"/>
-									<path d="M11.64 1.67c-.2 0-.401.077-.555.23l-1.77 1.768 3.054 3.053 1.769-1.77a.783.783 0 0 0 0-1.11l-1.943-1.94a.782.782 0 0 0-.555-.231z" solid-color="#000000"/>
-							</g>
-					</svg>
-					</button>
+					<time data-field="datetime"></time>
 				</td>
+				<td class="center" data-field="location"></td>
 			</tr>
 		</template>
 	</body>

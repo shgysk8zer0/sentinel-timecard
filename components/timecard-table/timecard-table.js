@@ -306,30 +306,9 @@ export default class HTMLTimeCardTableElement extends HTMLElement {
 			}
 		});
 
-		row.querySelectorAll('[data-click]').forEach(btn => {
-			switch(btn.dataset.click) {
-			case 'edit':
-				btn.addEventListener('click', async event => {
-					const tr = event.target.closest('tr');
-					if (tr instanceof HTMLTableRowElement) {
-						await customElements.whenDefined('edit-entry');
-						const data = this.getRowData(tr);
-						const HTMLEditEntryElement = customElements.get('edit-entry');
-						const dialog = new HTMLEditEntryElement(data);
-						await dialog.ready();
-						dialog.dialog.addEventListener('close', () => {
-							dialog.remove();
-						});
-						document.body.append(dialog);
-						dialog.showModal();
-					}
-				});
-			}
-		});
-
-		row.querySelector('[data-click="edit"]').toggleAttribute('disabled', props.changeRequested === true);
 		this.tBody.append(row);
-		return row;
+		const rows = this.tBody.rows;
+		return rows.item(rows.length - 1);
 	}
 
 	get uid() {

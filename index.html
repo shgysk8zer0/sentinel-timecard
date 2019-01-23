@@ -3,10 +3,10 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
-		<meta name="description" content="Toggle vehicle tracking for SentinelPro" />
-		<meta itemprop="description" content="Toggle vehicle tracking for SentinelPro" />
-		<meta name="keywords" content="vrmt, Sentinel, tracking" />
-		<meta itemprop="keywords" content="vrmt, Sentinel, tracking" />
+		<meta name="description" content="Timecard and log for SentinelPro" />
+		<meta itemprop="description" content="Timecard and log for SentinelPro" />
+		<meta name="keywords" content="vrmt, Sentinel, timecard" />
+		<meta itemprop="keywords" content="vrmt, Sentinel, timecard" />
 		<meta name="referrer" content="origin-when-cross-origin" />
 		<!-- <meta itemprop="thumbnailUrl" content="" /> -->
 		<meta name="mobile-web-app-capable" content="yes" />
@@ -15,17 +15,17 @@
 		<meta name="msapplication-TileImage" content="./img/mstile-150x150.png" />
 		<!-- Open Graph (Facebook) -->
 		<meta property="og:type" content="website" />
-		<meta property="og:title" content="Sentinel Tracking" />
-		<meta property="og:site_name" content="Sentinel Tracking" />
+		<meta property="og:title" content="Sentinel Timecard" />
+		<meta property="og:site_name" content="Sentinel Timecard" />
 		<!-- <meta property="og:url" content="" />
 		<meta property="og:image" content="" /> -->
-		<meta property="og:description" content="Toggle vehicle tracking for SentinelPro" />
+		<meta property="og:description" content="Timecard and log for SentinelPro" />
 		<meta property="og:locale" content="en_US" />
 		<!-- End Open Graph -->
 		<!-- Twitter Card -->
 		<meta name="twitter:site" content="DrvWithSentinel" />
-		<meta name="twitter:title" content="Sentinel Driver" />
-		<meta name="twitter:description" content="Toggle vehicle tracking for SentinelPro" />
+		<meta name="twitter:title" content="Sentinel Timecard" />
+		<meta name="twitter:description" content="Timecard and log for SentinelPro" />
 		<title>Sentinel Timecard</title>
 		<script type="module" src="js/index.js" async=""></script>
 		<link rel="stylesheet" href="css/styles/index.css" media="all" />
@@ -44,7 +44,9 @@
 	<body class="border-box background-primary color-default font-main grid">
 		<header id="header" class="background-cover background-center background-no-repeat background-fixed center">
 			<a href="https://www.drivewithsentinel.com/" class="inline-block">
-				<img itemprop="image" src="./img/logo.png" alt="Sentinel" />
+				<svg class="logo filter-shadow-dark">
+					<use xlink:href="img/icons.svg#favicon" />
+				</svg>
 			</a>
 		</header>
 		<nav id="nav" class="flex row no-wrap sticky top z-3">
@@ -72,7 +74,10 @@
 					<h3>
 						<a href="https://www.drivewithsentinel.com/" itemprop="url">
 							<meta itemprop="name" content="Sentinel" />
-							<img itemprop="image" src="./img/logo.png" alt="Sentinel" />
+							<meta itemprop="image" content="./img/logo.png" />
+							<svg class="logo">
+								<use xlink:href="img/icons.svg#logo" />
+							</svg>
 						</a>
 					</h3>
 					<div class="contact-links">
