@@ -329,7 +329,8 @@ export default class HTMLTimeCardTableElement extends HTMLElement {
 
 		row.querySelector('[data-click="edit"]').toggleAttribute('disabled', props.changeRequested === true);
 		this.tBody.append(row);
-		return row;
+		const rows = this.tBody.rows;
+		return rows.item(rows.length - 1);
 	}
 
 	get uid() {
