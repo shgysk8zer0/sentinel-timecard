@@ -1,4 +1,3 @@
-import './edit-entry.js';
 import User from '../../js/User.js';
 import {API} from '../../js/consts.js';
 import {importLink} from '../../js/std-js/functions.js';

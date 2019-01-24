@@ -2,10 +2,11 @@ const config = {
 	version: '1.0.0',
 	caches: [
 		'./',
+		'./js/index.js',
+		'./css/styles/index.css',
 		// Images
 		'./img/icons.svg',
 		'./img/favicon.svg',
-		'./img/logo.png',
 		// Fonts
 		'./fonts/roboto.woff2',
 	].map(path => new URL(path, this.registration.scope)),
