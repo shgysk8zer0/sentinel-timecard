@@ -22,10 +22,9 @@ function dow(dNum) {
 }
 
 function parse(...records) {
-	const tz = new Date().toISOString().split('.')[1];
 	return records.map(record => {
 		return {
-			datetime: new Date(`${record.clockdttm.replace(' ', 'T')}.${tz}`),
+			datetime: new Date(`${record.clockdttm.replace(' ', 'T')}`),
 			io: record.status.toLowerCase(),
 			location: record.location,
 			hours: parseFloat(record.dutyhours) || '',
