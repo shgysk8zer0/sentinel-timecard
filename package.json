@@ -5,9 +5,8 @@
   "config": {
     "serve": {
       "domain": "localhost",
-      "port": {
-        "dev": 8080
-      }
+      "port": 8080,
+      "path": "./"
     },
     "dir": {
       "css": "css/styles/",
@@ -24,7 +23,7 @@
   "scripts": {
     "preinstall": "git submodule update --init --recursive",
     "postinstall": "npm run build",
-    "start": "python -m SimpleHTTPServer ${npm_package_config_serve_port_dev}",
+    "start": "http-server ${npm_config_serve_psth} -p ${npm_package_config_serve_port} -a ${npm_package_config_serve_domain} -o",
     "test": "npm run lint:js && npm run lint:css",
     "build": "npm run build:icons",
     "build:icons": "svg-sprite-generate -c icons.csv -o ${npm_package_config_dir_img}icons.svg",
@@ -56,6 +55,7 @@
     "svgo": "^1.1.1"
   },
   "dependencies": {
+    "http-server": "^0.11.1",
     "svg-sprite-generator": "0.0.7"
   }
 }
