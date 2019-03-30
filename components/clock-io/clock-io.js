@@ -38,7 +38,6 @@ export default class HTMLClockIOELement extends HTMLElement {
 				const url = new URL('m_clockinout', API);
 				const headers = new Headers();
 				const body = JSON.stringify(this);
-				const datetime = new Date();
 				headers.set('Accept', 'application/json');
 				headers.set('Content-Type', 'application/json');
 
@@ -50,17 +49,13 @@ export default class HTMLClockIOELement extends HTMLElement {
 					} else {
 						this.clockedIn = ! this.clockedIn;
 						const entry = {
-							datetime,
+							datetime: new Date(json.clockdttm.replace(' ', 'T')),
 							io: this.status,
 							location: json.location,
 							hours: parseFloat(json.hours),
 						};
 						sessionStorage.setItem('currentStatus', entry.io.toUpperCase());
 						this.notes = '';
-						// const io = this.status;
-						// const location = json.location;
-						// const hours = parseFloat(json.hours);
-						// {datetime, io, location, hours}
 						const row = document.querySelector('timecard-table').createRow(entry);
 						if (row instanceof HTMLTableRowElement) {
 							row.scrollIntoView({block: 'end', behavior: 'smooth'});
