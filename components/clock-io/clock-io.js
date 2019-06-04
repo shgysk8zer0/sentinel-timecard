@@ -1,6 +1,7 @@
 import User from '../../js/User.js';
 import {API} from '../../js/consts.js';
-import {importLink} from '../../js/std-js/functions.js';
+import {importLink, $} from '../../js/std-js/functions.js';
+import {confirm} from '../../js/std-js/asyncDialog.js';
 
 export default class HTMLClockIOELement extends HTMLElement {
 	constructor() {
@@ -33,40 +34,61 @@ export default class HTMLClockIOELement extends HTMLElement {
 					break;
 				}
 			});
+
 			temp.querySelector('form').addEventListener('submit', async event => {
 				event.preventDefault();
-				const url = new URL('m_clockinout', API);
-				const headers = new Headers();
-				const body = JSON.stringify(this);
-				headers.set('Accept', 'application/json');
-				headers.set('Content-Type', 'application/json');
+				try {
+					$('fieldset, button', this.shadowRoot).disable();
+					const now = new Date();
+					const status = this.clockedIn ? 'out' : 'in';
 
-				const resp = await fetch(url, {headers, body, mode: 'cors', method: 'POST'});
-				if (resp.ok) {
-					const json = await resp.json();
-					if ('error' in json) {
-						throw new Error(`${json.message} [${json.error}]`);
-					} else {
-						this.clockedIn = ! this.clockedIn;
-						const entry = {
-							datetime: new Date(json.clockdttm.replace(' ', 'T')),
-							io: this.status,
-							location: json.location,
-							hours: parseFloat(json.hours),
-						};
-						sessionStorage.setItem('currentStatus', entry.io.toUpperCase());
-						this.notes = '';
-						const row = document.querySelector('timecard-table').createRow(entry);
-						if (row instanceof HTMLTableRowElement) {
-							row.scrollIntoView({block: 'end', behavior: 'smooth'});
-						}
+					if (! await confirm(`Please confirm you are clocking clocking ${status} at ${now.toLocaleTimeString()}`)) {
+						throw new Error(`User rejected clock ${status}`);
 					}
-				} else {
-					throw new Error(`${resp.url} [${resp.status} ${resp.statusText}]`);
+
+					const url = new URL('m_clockinout', API);
+					const headers = new Headers();
+					const body = JSON.stringify(this);
+					headers.set('Accept', 'application/json');
+					headers.set('Content-Type', 'application/json');
+
+					const resp = await fetch(url, {
+						headers,
+						body,
+						mode: 'cors',
+						method: 'POST',
+					});
+
+					if (resp.ok) {
+						const json = await resp.json();
+						if ('error' in json) {
+							throw new Error(`${json.message} [${json.error}]`);
+						} else {
+							this.clockedIn = ! this.clockedIn;
+							const entry = {
+								datetime: new Date(json.clockdttm.replace(' ', 'T')),
+								io: this.status,
+								location: json.location,
+								hours: parseFloat(json.hours),
+							};
+							sessionStorage.setItem('currentStatus', entry.io.toUpperCase());
+							this.notes = '';
+							const row = document.querySelector('timecard-table').createRow(entry);
+							if (row instanceof HTMLTableRowElement) {
+								row.scrollIntoView({block: 'end', behavior: 'smooth'});
+							}
+						}
+					} else {
+						throw new Error(`${resp.url} [${resp.status} ${resp.statusText}]`);
+					}
+				} catch (err) {
+					console.error(err);
+				} finally {
+					$('fieldset, button', this.shadowRoot).enable();
 				}
 			});
+
 			this.shadowRoot.append(...temp.head.children, ...temp.body.children);
-			this.update();
 		});
 	}
 
