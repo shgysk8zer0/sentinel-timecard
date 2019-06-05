@@ -42,7 +42,7 @@ export default class HTMLClockIOELement extends HTMLElement {
 					const now = new Date();
 					const status = this.clockedIn ? 'out' : 'in';
 
-					if (! await confirm(`Please confirm you are clocking clocking ${status} at ${now.toLocaleTimeString()}`)) {
+					if (! await confirm(`Please confirm you are clocking ${status} at ${now.toLocaleTimeString()}`)) {
 						throw new Error(`User rejected clock ${status}`);
 					}
 
