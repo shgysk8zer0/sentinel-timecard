@@ -1,6 +1,6 @@
 {
   "name": "sentinel-timecard",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "config": {
     "serve": {
@@ -23,7 +23,7 @@
   "scripts": {
     "preinstall": "git submodule update --init --recursive",
     "postinstall": "npm run build",
-    "start": "http-server ${npm_config_serve_psth} -p ${npm_package_config_serve_port} -a ${npm_package_config_serve_domain} -o",
+    "start": "http-server ${npm_package_config_serve_path} -p ${npm_package_config_serve_port} -a ${npm_package_config_serve_domain} -o",
     "test": "npm run lint:js && npm run lint:css",
     "build": "npm run build:icons",
     "build:icons": "svg-sprite-generate -c icons.csv -o ${npm_package_config_dir_img}icons.svg",
